@@ -1,50 +1,48 @@
 #include "opsoup.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
 
 #define OUTPUT_FILE "ffe.asm"
 
 opsoup_t *o;
 
 int main(int argc, char **argv) {
-    opsoup_t ctx;
+    opsoup_t ctx = {0};
     int round = 1;
-    FILE *f;
+    FILE *f = NULL;
 
     o = &ctx;
-    memset(o, 0, sizeof (opsoup_t));
 
-    if(argc == 2 && strcmp(argv[1], "-v") == 0)
-        o->verbose = 1;
+    o->verbose = (argc == 2 && strcmp(argv[1], "-v") == 0);
 
-    if(image_load() != 0)
-        return 1;
+    if (image_load() != 0) {
+        fprintf(stderr, "Error: Image load failed!\n");
+        return EXIT_FAILURE;
+    }
 
     init_sync();
-
     dis_pass1();
 
-    while(dis_pass2(round)) {
+    while (dis_pass2(round++)) {
         o->nref = 0;
-        round++;
     }
 
     label_reloc_upgrade();
-
     label_gen_names();
-
     label_sort();
 
-    f = fopen(OUTPUT_FILE, "w");
-    if(f == NULL) {
-        printf("main: couldn't open '" OUTPUT_FILE "' for writing: %s\n", strerror(errno));
-        return 1;
+    if ((f = fopen(OUTPUT_FILE, "w")) == NULL) {
+        fprintf(stderr, "main: couldn't open '%s' for writing: %s\n", OUTPUT_FILE, strerror(errno));
+        return EXIT_FAILURE;
     }
 
     label_extern_output(f);
-
     dis_pass3(f);
-
     data_output(f);
     data_bss_output(f);
+
     fclose(f);
-    return 0;
+    return EXIT_SUCCESS;
 }
