@@ -6,6 +6,7 @@
 #include <errno.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -24,7 +25,7 @@ typedef enum {
     seg_RELOC
 } segment_type_t;
 
-typedef struct segment_st {
+typedef struct {
     char            *name;
     segment_type_t   type;
     uint8_t         *start;
@@ -33,14 +34,14 @@ typedef struct segment_st {
     void            *info;
 } segment_t;
 
-typedef struct _image_st {
+typedef struct {
     int              fd;
     uint8_t         *core;
     uint32_t         size;
     segment_t       *segment;
 } image_t;
 
-typedef struct _reloc_st {
+typedef struct {
     uint8_t         *mem;
     uint8_t         *target;
 } reloc_t;
@@ -85,20 +86,16 @@ typedef struct ref_st {
     int             ntarget;               
 } ref_t;
 
-typedef struct _opsoup_st {
+typedef struct {
     image_t          image;
-
     reloc_t         *reloc;
     int              nreloc;
-
     label_t         *label;
     int             nlabel, slabel;
     int             added, upgraded;
-
     ref_t           *ref;
     int              nref, sref;
-
-    int              verbose;
+    bool             verbose;
 } opsoup_t;
 
 extern opsoup_t *o;

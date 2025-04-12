@@ -1,11 +1,59 @@
+# Build artifacts
+build/
+*.o
+*.obj
+*.exe
+*.out
+*.app
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Dependencies
+deps/
+vendor/
+
+# Generated files
+*.gen.c
+*.gen.h
+*.asm
+
+# Test artifacts
+*.gcda
+*.gcno
+coverage/
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+
+# Documentation
+docs/_build/
+*.pdf
+*.epub
+*.mobi
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+
 # Prerequisites
 *.d
-
-# Object files
-*.o
-*.ko
-*.obj
-*.elf
 
 # Linker output
 *.ilk

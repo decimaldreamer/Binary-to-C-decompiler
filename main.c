@@ -3,10 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <stdbool.h>
 
 #define OUTPUT_FILE "ffe.asm"
 
-opsoup_t *o;
+static opsoup_t *o = NULL;
 
 int main(int argc, char **argv) {
     opsoup_t ctx = {0};
@@ -15,7 +16,12 @@ int main(int argc, char **argv) {
 
     o = &ctx;
 
-    o->verbose = (argc == 2 && strcmp(argv[1], "-v") == 0);
+    if (argc < 2) {
+        fprintf(stderr, "Usage: %s [-v] input_file\n", argv[0]);
+        return EXIT_FAILURE;
+    }
+
+    o->verbose = (argc == 3 && strcmp(argv[1], "-v") == 0);
 
     if (image_load() != 0) {
         fprintf(stderr, "Error: Image load failed!\n");
